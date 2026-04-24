@@ -3,10 +3,11 @@ name: claudeshrink
 version: 1.0.0
 author: Akshay Gundewar
 description: >
-  Automatically compress large text, files, or prompts before processing.
-  Trigger when the user pastes a large block of text or code, asks to analyze
-  a large file (logs, docs, transcripts, source), or provides a prompt that
-  is too large or token-heavy for the context window.
+  Automatically compress large natural text or log files before processing.
+  Trigger when the user pastes massive text blobs, or asks to analyze
+  a large file (logs, docs, transcripts), or provides a prompt that
+  is too large for the context window. DO NOT trigger on source code files
+  or structural data (JSON, XML).
 tags:
   - compression
   - tokens
