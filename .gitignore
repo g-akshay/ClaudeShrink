@@ -1,0 +1,20 @@
+# Environments
+.venv
+venv/
+ENV/
+env/
+.env
+
+# Tests
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# IDEs / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Local history/logs
+*.log
+.history/
