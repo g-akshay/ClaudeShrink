@@ -59,6 +59,19 @@ Defaults in `scripts/compressor.py`:
 
 Edit `~/.claude/skills/ClaudeShrink/scripts/compressor.py` to override.
 
+---
+
+## The "Why": Solving the AI Budget Burn
+
+As Agentic AI and long context windows become the norm, token consumption has skyrocketed. Sending massive trace logs or full code repositories to LLMs on every query often leads to unseen budget explosions.
+
+Recently, companies like Uber have made headlines for [burning through their entire annual AI budgets in mere months](https://aimagazine.com/news/why-uber-has-already-burned-through-its-ai-budget). Giving engineers tools to push massive payloads to AI is powerful, but doing so without a compression layer is financially dangerous.
+
+**ClaudeShrink prevents this by:**
+1. Stripping redundant or low-information tokens exactly where humans easily miss them.
+2. Handling the compression entirely on your local CPU **for free** before the payload touches the paid cloud API.
+3. Giving AI assistants a standardized, enforced cap on how many tokens they consume per request.
+
 ## Platform Support
 
 | Platform | Supported | Notes |
