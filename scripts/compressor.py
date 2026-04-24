@@ -10,23 +10,50 @@ def estimate_target_tokens(text: str) -> int:
     return target
 
 def compress_text(content: str):
+    # Using gpt2 fixes the unpack error and runs much faster on CPU
     compressor = PromptCompressor(
-        model_name="microsoft/phi-2",
+        model_name="gpt2",
         device_map="cpu"
     )
 
     target = estimate_target_tokens(content)
 
-    compressed_result = compressor.compress_prompt(
-        content,
-        target_token=target,
-        instruction="",
-        question=""
-    )
+    # Split text into manageable chunks to fix the sequence length error
+    lines = content.split('\n')
+    chunks = []
+    current_chunk = ""
+    
+    for line in lines:
+        # 1500 characters is safely under the GPT2 token limit (1024)
+        if len(current_chunk) + len(line) > 1500:
+            if current_chunk:
+                chunks.append(current_chunk)
+            current_chunk = line
+        else:
+            current_chunk += ("\n" + line if current_chunk else line)
+            
+    if current_chunk:
+        chunks.append(current_chunk)
 
-    print(compressed_result["compressed_prompt"])
-    ratio = compressed_result.get("ratio", "unknown")
-    print(f"\n\n<!-- ClaudeShrink: compressed {len(content)} chars → target {target} tokens (ratio: {ratio}) -->",
+    # Process each chunk individually
+    compressed_chunks = []
+    
+    # Simple strategy: divide the target tokens evenly among the chunks
+    per_chunk_target = max(64, target // len(chunks)) if chunks else target
+    
+    for c in chunks:
+        res = compressor.compress_prompt(
+            context=[c],
+            instruction="",
+            question="",
+            target_token=per_chunk_target
+        )
+        compressed_chunks.append(res["compressed_prompt"])
+
+    final_compressed = "\n".join(compressed_chunks)
+    print(final_compressed)
+    
+    print(f"\n\n<!-- ClaudeShrink: compressed {len(content)} chars in {len(chunks)} chunks → ~target {target} tokens -->",
           file=sys.stderr)
 
 def main():

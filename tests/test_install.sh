@@ -17,8 +17,8 @@ PASS=0
 FAIL=0
 FAILURES=()
 
-pass() { echo "  ✅ $1"; ((PASS++)); }
-fail() { echo "  ❌ $1"; FAILURES+=("$1"); ((FAIL++)); }
+pass() { echo "  ✅ $1"; PASS=$((PASS+1)); true; }
+fail() { echo "  ❌ $1"; FAILURES+=("$1"); FAIL=$((FAIL+1)); true; }
 
 echo ""
 echo "══════════════════════════════════════════"

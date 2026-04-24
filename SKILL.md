@@ -25,7 +25,7 @@ allowed-tools:
 
 # Overview
 
-ClaudeShrink compresses large inputs using [LLMLingua](https://github.com/microsoft/LLMLingua) (microsoft/phi-2) before you reason over them. This preserves semantic content while dramatically reducing token usage.
+ClaudeShrink compresses large inputs using [LLMLingua](https://github.com/microsoft/LLMLingua) (gpt2) before you reason over them. This preserves semantic content while dramatically reducing token usage.
 
 The compressor lives at: `~/.claude/skills/ClaudeShrink/scripts/compressor.py`
 It runs inside an isolated venv at: `~/.claude/skills/ClaudeShrink/.venv`

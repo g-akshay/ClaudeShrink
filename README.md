@@ -2,7 +2,7 @@
 
 A Claude Code skill that shrinks massive prompts and files using LLMLingua to save tokens.
 
-This skill enables Claude Code to handle massive files (logs, documentation, long traces) by compressing them using [LLMLingua](https://github.com/microsoft/LLMLingua). It uses the `microsoft/phi-2` model locally on your CPU to reduce text size while maintaining semantic integrity, significantly saving context window tokens.
+This skill enables Claude Code to handle massive files (logs, documentation, long traces) by compressing them using [LLMLingua](https://github.com/microsoft/LLMLingua). It uses the `gpt2` model locally on your CPU to reduce text size while maintaining semantic integrity, significantly saving context window tokens.
 
 ## Installation
 
@@ -21,7 +21,7 @@ This will:
 > - macOS: install Python via `brew install python` or [python.org](https://www.python.org/downloads/)
 > - Linux (Ubuntu/Debian): `sudo apt install python3 git` — `python3-venv` is auto-handled by the installer
 >
-> **Note:** The `phi-2` model (~5 GB) is downloaded on **first use**, not at install time.
+> **Note:** The `gpt2` model (~500 MB) is downloaded on **first use**, not at install time.
 
 ## How to Trigger
 
@@ -35,7 +35,7 @@ Defaults in `scripts/compressor.py`:
 
 | Setting | Default | Notes |
 |---|---|---|
-| **Model** | `microsoft/phi-2` | Lightweight, CPU-friendly |
+| **Model** | `gpt2` | Lightweight, CPU-friendly |
 | **Device** | `cpu` | Change to `cuda` if you have a GPU |
 | **Target Tokens** | Auto (30% of input, 512–4096) | Adaptive — no manual tuning needed |
 

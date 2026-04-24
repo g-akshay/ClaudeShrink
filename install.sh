@@ -100,7 +100,7 @@ echo "==> Installing dependencies (this may take a while on first run)"
 
 echo ""
 echo "✅ ClaudeShrink installed successfully."
-echo "   Note: The phi-2 model (~5 GB) will be downloaded on first use."
+echo "   Note: The gpt2 model (~500 MB) will be downloaded on first use."
 echo "   Skill path:   $SKILL_DIR"
 echo "   Script path:  $SKILL_DIR/scripts/compressor.py"
 echo "   Venv path:    $VENV_DIR"

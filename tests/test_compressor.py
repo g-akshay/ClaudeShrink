@@ -2,7 +2,7 @@
 Unit tests for scripts/compressor.py
 
 These tests mock llmlingua.PromptCompressor so they run fast without
-downloading phi-2 or needing a GPU. Safe to run in CI.
+downloading gpt2 or needing a GPU. Safe to run in CI.
 
 Run:
     pytest tests/test_compressor.py -v
@@ -122,12 +122,23 @@ def test_missing_file_error_on_stderr():
 
 def test_stdin_no_args_exits_with_tty_message():
     """Running with no args and no stdin pipe should print usage to stderr."""
+    # We use a short inline script to force sys.stdin.isatty to True
+    # because subprocess.DEVNULL is not a tty.
+    inline_script = f"""
+import sys
+import os
+
+# mock isatty
+sys.stdin.isatty = lambda: True
+
+# execute file
+with open('{SCRIPT}', 'r') as f:
+    exec(f.read())
+"""
     result = subprocess.run(
-        [sys.executable, SCRIPT],
+        [sys.executable, "-c", inline_script],
         capture_output=True,
         text=True,
-        # Don't pipe stdin → simulates a TTY
-        stdin=subprocess.DEVNULL,
     )
     assert result.returncode == 1
     assert "usage" in result.stderr.lower()
