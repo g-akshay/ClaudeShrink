@@ -23,6 +23,14 @@ This will:
 >
 > **Note:** The `gpt2` model (~500 MB) is downloaded on **first use**, not at install time.
 
+### Updating
+
+To update to the latest version, simply run the exact same command again. It is designed to be safe, additive, and will pull the latest code without destroying your environment:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/g-akshay/ClaudeShrink/main/install.sh | bash
+```
+
 ## How to Trigger
 
 Claude will automatically use this skill when it detects a request to process a large file. You can also explicitly trigger it by asking:
