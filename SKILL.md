@@ -1,7 +1,7 @@
 ---
 name: claudeshrink
 version: 1.0.0
-author: akshaygundewar
+author: Akshay Gundewar
 description: >
   Automatically compress large text, files, or prompts before processing.
   Trigger when the user pastes a large block of text or code, asks to analyze
@@ -12,6 +12,10 @@ tags:
   - tokens
   - context-window
   - llmlingua
+  - skills
+  - ai-tool
+  - claude-code
+  - prompt-compression
 requires:
   - python3
   - git
@@ -23,7 +27,7 @@ allowed-tools:
 
 ClaudeShrink compresses large inputs using [LLMLingua](https://github.com/microsoft/LLMLingua) (microsoft/phi-2) before you reason over them. This preserves semantic content while dramatically reducing token usage.
 
-The compressor lives at: `~/.claude/skills/ClaudeShrink/scripts/compressor.py`  
+The compressor lives at: `~/.claude/skills/ClaudeShrink/scripts/compressor.py`
 It runs inside an isolated venv at: `~/.claude/skills/ClaudeShrink/.venv`
 
 ---
@@ -64,9 +68,10 @@ Follow these steps in order every time this skill is triggered:
    ```
 
 4. **If it's raw pasted text or a prompt (no file on disk)**, write to a temp file first, then compress, then delete:
+   Write the actual input content into the heredoc (do not write a placeholder string):
    ```bash
    cat > /tmp/cs_input.txt << 'EOF'
-   <paste the raw text here>
+   [insert the full raw text content here]
    EOF
    ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /tmp/cs_input.txt
    rm /tmp/cs_input.txt
