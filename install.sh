@@ -41,36 +41,57 @@ fi
 
 echo "    Python $(python3 --version) ✓"
 
-# ── 1b. Ensure python3-venv is available (Debian/Ubuntu gap) ─────────────────
+# ── 1b. Ensure python3-venv and rsync are available (Linux gaps) ─────────────
 if [ "$OS_NAME" = "Linux" ]; then
-  if ! python3 -m venv --help &>/dev/null; then
-    echo "==> python3-venv not found. Attempting to install..."
+  MISSING_PKGS=""
+  python3 -m venv --help &>/dev/null || MISSING_PKGS="$MISSING_PKGS python3-venv python3-pip"
+  command -v rsync &>/dev/null        || MISSING_PKGS="$MISSING_PKGS rsync"
+
+  if [ -n "$MISSING_PKGS" ]; then
+    echo "==> Installing missing packages:$MISSING_PKGS"
     if command -v apt-get &>/dev/null; then
-      sudo apt-get install -y python3-venv python3-pip
+      sudo apt-get install -y $MISSING_PKGS
     elif command -v dnf &>/dev/null; then
-      echo "ERROR: Run 'sudo dnf install python3-venv' and retry." >&2; exit 1
+      echo "ERROR: Run 'sudo dnf install$MISSING_PKGS' and retry." >&2; exit 1
     elif command -v pacman &>/dev/null; then
-      echo "ERROR: Run 'sudo pacman -S python-virtualenv' and retry." >&2; exit 1
+      echo "ERROR: Run 'sudo pacman -S$MISSING_PKGS' and retry." >&2; exit 1
     else
-      echo "ERROR: Cannot install python3-venv automatically. Install it for your distro and retry." >&2; exit 1
+      echo "ERROR: Cannot install missing packages automatically. Install manually:$MISSING_PKGS" >&2; exit 1
     fi
   fi
 fi
 
-# ── 2. Clone or update skill ─────────────────────────────────────────────────
+# ── 2. Clone or update skill (additive, never destructive) ───────────────────
 mkdir -p "$HOME/.claude/skills"
 
 if [ -d "$SKILL_DIR/.git" ]; then
+  # Case A: already a git repo — just pull latest
   echo "==> Updating existing install at $SKILL_DIR"
   git -C "$SKILL_DIR" pull --ff-only
+
+elif [ -d "$SKILL_DIR" ]; then
+  # Case B: dir exists but is not a git repo (e.g. manually created)
+  # Clone to a temp dir, copy skill files in additively, skip .venv
+  echo "==> Directory exists without git. Merging latest files into $SKILL_DIR"
+  TMP_DIR=$(mktemp -d)
+  git clone --quiet "$REPO_URL" "$TMP_DIR"
+  # rsync: update skill files, but never delete existing files or touch .venv
+  rsync -a --exclude='.venv' --exclude='.git' "$TMP_DIR/" "$SKILL_DIR/"
+  rm -rf "$TMP_DIR"
+
 else
+  # Case C: fresh install
   echo "==> Cloning into $SKILL_DIR"
   git clone "$REPO_URL" "$SKILL_DIR"
 fi
 
-# ── 3. Create isolated venv ───────────────────────────────────────────────────
-echo "==> Creating virtual environment at $VENV_DIR"
-python3 -m venv "$VENV_DIR"
+# ── 3. Create isolated venv (skip if already exists) ─────────────────────────
+if [ -d "$VENV_DIR" ]; then
+  echo "==> Venv already exists at $VENV_DIR — skipping creation"
+else
+  echo "==> Creating virtual environment at $VENV_DIR"
+  python3 -m venv "$VENV_DIR"
+fi
 
 # ── 4. Install dependencies ───────────────────────────────────────────────────
 echo "==> Installing dependencies (this may take a while on first run)"
