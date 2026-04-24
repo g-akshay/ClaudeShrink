@@ -4,6 +4,16 @@ A Claude Code skill that shrinks massive prompts and files using LLMLingua to sa
 
 This skill enables Claude Code to handle massive files (logs, documentation, long traces) by compressing them using [LLMLingua](https://github.com/microsoft/LLMLingua). It uses the `gpt2` model locally on your CPU to reduce text size while maintaining semantic integrity, significantly saving context window tokens.
 
+## Estimated Token Savings
+
+ClaudeShrink uses a dynamic adaptive sizing algorithm to decide how heavily to compress inputs. By default, it targets a ~70% reduction but respects hard floors and ceilings.
+
+| Input Type | Text Size | Original Tokens | Compressed Tokens | Reduction | Notes |
+|---|---|---|---|---|---|
+| **Small Prompts** | `< 2,000 chars` | `~500` | `~500` | **0%** | Meets 512-token safety floor; stays uncompressed |
+| **Large Texts** | `~15,000 chars` | `~3,750` | `~1,125` | **~70%** | Targets 30% of original tokens |
+| **Massive Files** | `> 50,000 chars`| `> 12,500` | `4,096` | **> 70-90%** | Hits the 4096-token hard safety cap |
+
 ## Installation
 
 Run this one-liner in your terminal:
