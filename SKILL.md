@@ -63,32 +63,38 @@ Follow these steps in order every time this skill is triggered:
 
 2. **Identify the input source** — is it a file path, raw pasted text, or a prompt?
 
-3. **If it's a file on disk**, run:
+3. **Extract user intent** — look at the user's request and derive a `--question` flag that captures what they care about. Examples:
+   - "find all errors" → `--question "What errors occurred?"`
+   - "summarize payment failures" → `--question "What payment failures occurred?"`
+   - "keep all WARNING and ERROR lines" → `--question "What warnings and errors occurred?"`
+   - No specific focus → omit `--question` (blind compression)
+
+4. **If it's a file on disk**, run:
    ```bash
-   ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /absolute/path/to/file.txt
+   ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /absolute/path/to/file.txt --question "derived question here"
    ```
 
-4. **If it's raw pasted text or a prompt (no file on disk)**, write to a uniquely-named temp file, compress, then delete:
+5. **If it's raw pasted text or a prompt (no file on disk)**, write to a uniquely-named temp file, compress, then delete:
    Write the actual input content into the heredoc (do not write a placeholder string):
    ```bash
    TMP=$(mktemp /tmp/cs_input.XXXXXX.txt)
    cat > "$TMP" << 'EOF'
    [insert the full raw text content here]
    EOF
-   ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py "$TMP"
+   ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py "$TMP" --question "derived question here"
    rm "$TMP"
    ```
 
-5. **Capture stdout** — this is the compressed text. Ignore stderr (it contains stats for your reference).
+6. **Capture stdout** — this is the compressed text. Ignore stderr (it contains stats for your reference).
 
-6. **If the compressor exits non-zero**, warn the user ("ClaudeShrink compression failed — proceeding with raw input") and continue with the original uncompressed text.
+7. **If the compressor exits non-zero**, warn the user ("ClaudeShrink compression failed — proceeding with raw input") and continue with the original uncompressed text.
 
-7. **Use only the compressed text** (or raw text on failure) as your working context for the user's request.
+8. **Use only the compressed text** (or raw text on failure) as your working context for the user's request.
 
-8. **Inform the user** with a one-line note, e.g.:
+9. **Inform the user** with a one-line note, e.g.:
    > "Input compressed with ClaudeShrink (LLMLingua). Compression stats: [paste ratio from stderr if available]."
 
-9. **Proceed with the user's original request** using the compressed context.
+10. **Proceed with the user's original request** using the compressed context.
 
 ---
 
@@ -102,20 +108,27 @@ Follow these steps in order every time this skill is triggered:
 
 ## Examples
 
-**Example 1 — Large log file:**
-> User: "Analyze this error log: /var/log/app.log"
+**Example 1 — Large log file with intent:**
+> User: "Find all payment failures in this log: /var/log/app.log"
 
 ```bash
-~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /var/log/app.log
+~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /var/log/app.log --question "What payment failures occurred?"
 ```
 Then analyze the compressed output.
 
-**Example 2 — Pasted text:**
-> User pastes 800 lines of documentation inline.
+**Example 2 — Pasted text with intent:**
+> User: "Summarize the errors in this log" then pastes 800 lines.
 
-Write it to a `mktemp`-generated path, compress, delete, analyze.
+```bash
+TMP=$(mktemp /tmp/cs_input.XXXXXX.txt)
+cat > "$TMP" << 'EOF'
+[full pasted content]
+EOF
+~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py "$TMP" --question "What errors occurred?"
+rm "$TMP"
+```
 
-**Example 3 — Explicit trigger:**
-> User: "Use ClaudeShrink on this prompt before answering: [long prompt]"
+**Example 3 — No specific focus:**
+> User: "Compress this before you read it: [long prompt]"
 
-Same as Example 2.
+Omit `--question` — blind compression applies.

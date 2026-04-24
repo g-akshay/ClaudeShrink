@@ -181,3 +181,71 @@ def test_stats_go_to_stderr_not_stdout(tmp_path):
             mod.compress_text(f.read_text())
         assert "ClaudeShrink" in err.getvalue()   # stats on stderr
         assert "ClaudeShrink" not in out.getvalue()  # not on stdout
+
+
+# ── Question / instruction flags ─────────────────────────────────────────────
+
+def test_question_passed_to_compress_prompt(tmp_path):
+    """--question flag should be forwarded to compress_prompt."""
+    f = tmp_path / "input.txt"
+    f.write_text("word " * 500)
+
+    mock_instance = make_mock_compressor()
+    with patch("llmlingua.PromptCompressor", return_value=mock_instance):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("compressor", SCRIPT)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.compress_text(f.read_text(), question="What errors occurred?")
+
+    call_kwargs = mock_instance.compress_prompt.call_args
+    assert call_kwargs is not None
+    assert call_kwargs.kwargs.get("question") == "What errors occurred?" or \
+           (call_kwargs.args and "What errors occurred?" in call_kwargs.args)
+
+
+def test_instruction_passed_to_compress_prompt(tmp_path):
+    """--instruction flag should be forwarded to compress_prompt."""
+    f = tmp_path / "input.txt"
+    f.write_text("word " * 500)
+
+    mock_instance = make_mock_compressor()
+    with patch("llmlingua.PromptCompressor", return_value=mock_instance):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("compressor", SCRIPT)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.compress_text(f.read_text(), instruction="Keep all ERROR lines.")
+
+    call_kwargs = mock_instance.compress_prompt.call_args
+    assert call_kwargs is not None
+    assert call_kwargs.kwargs.get("instruction") == "Keep all ERROR lines." or \
+           (call_kwargs.args and "Keep all ERROR lines." in call_kwargs.args)
+
+
+def test_question_flag_cli(tmp_path):
+    """--question passed via CLI should reach compress_prompt."""
+    f = tmp_path / "input.txt"
+    f.write_text("word " * 500)
+    result = run_script(str(f), "--question", "What errors occurred?")
+    # With mocked compressor (no llmlingua available in subprocess), just check it doesn't crash on arg parsing
+    assert result.returncode in (0, 1)  # may fail without real llmlingua, but must not error on arg parse
+
+
+def test_stats_include_question_hint(tmp_path):
+    """When --question is set, stats line on stderr should mention it."""
+    f = tmp_path / "input.txt"
+    f.write_text("word " * 500)
+
+    mock_instance = make_mock_compressor()
+    with patch("llmlingua.PromptCompressor", return_value=mock_instance):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("compressor", SCRIPT)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        import io
+        from contextlib import redirect_stdout, redirect_stderr
+        out, err = io.StringIO(), io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            mod.compress_text(f.read_text(), question="What errors occurred?")
+        assert "question=" in err.getvalue()

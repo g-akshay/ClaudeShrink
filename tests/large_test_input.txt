@@ -1,0 +1,169 @@
+Application Server Log - Full Day Export
+=========================================
+
+2026-04-24 00:00:01 INFO  Nightly maintenance window started
+2026-04-24 00:00:02 INFO  Running vacuum on database tables: users, orders, sessions, products, inventory
+2026-04-24 00:00:05 INFO  Vacuum completed. Reclaimed 1.2GB disk space
+2026-04-24 00:00:06 INFO  Rebuilding search indexes for products table
+2026-04-24 00:00:45 INFO  Search index rebuild complete. 248,902 documents indexed
+2026-04-24 00:01:00 INFO  Purging expired sessions older than 30 days. Found 84,231 records
+2026-04-24 00:01:12 INFO  Session purge complete. Removed 84,231 records
+2026-04-24 00:01:13 INFO  Archiving orders older than 1 year to cold storage
+2026-04-24 00:02:30 INFO  Archive complete. Moved 12,405 orders to s3://cold-storage/orders/2025/
+2026-04-24 00:02:31 INFO  Nightly maintenance window finished. Duration: 150s
+2026-04-24 00:03:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 00:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 00:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 01:00:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 01:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 02:00:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+2026-04-24 06:00:00 INFO  Morning traffic ramp-up detected
+2026-04-24 06:01:15 INFO  GET /api/users/1001 200 42ms
+2026-04-24 06:01:16 INFO  GET /api/dashboard 200 88ms
+2026-04-24 06:01:17 INFO  POST /api/auth/login 200 95ms user=john.doe@example.com
+2026-04-24 06:01:18 INFO  GET /api/notifications 200 33ms
+2026-04-24 06:02:00 INFO  GET /api/products/list?page=1&limit=20 200 112ms
+2026-04-24 06:02:01 INFO  GET /api/products/list?page=2&limit=20 200 108ms
+2026-04-24 06:02:02 WARN  Cache miss for key: products:list:page=3 - fetching from DB
+2026-04-24 06:02:03 INFO  GET /api/products/list?page=3&limit=20 200 245ms
+2026-04-24 06:05:00 INFO  POST /api/auth/login 200 91ms user=jane.smith@example.com
+2026-04-24 06:05:01 INFO  GET /api/orders/history?user=jane.smith 200 134ms
+2026-04-24 06:10:00 INFO  Worker process #1 processing email queue. 23 messages pending
+2026-04-24 06:10:05 INFO  Worker process #1 sent 23 emails successfully
+2026-04-24 06:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 06:20:00 INFO  POST /api/orders 201 210ms order_id=ORD-98231 user=john.doe amount=149.99
+2026-04-24 06:20:01 INFO  Payment gateway request for ORD-98231 initiated
+2026-04-24 06:20:02 INFO  Payment gateway response: SUCCESS txn_id=TXN-44821 amount=149.99
+2026-04-24 06:20:03 INFO  Order ORD-98231 confirmed. Inventory updated.
+2026-04-24 06:20:04 INFO  Fulfillment request queued for ORD-98231
+
+2026-04-24 08:00:00 INFO  Peak morning traffic window starting
+2026-04-24 08:00:01 INFO  Auto-scaling triggered: adding 2 worker nodes
+2026-04-24 08:00:30 INFO  Worker node web-05 joined cluster
+2026-04-24 08:00:31 INFO  Worker node web-06 joined cluster
+2026-04-24 08:01:00 INFO  GET /api/users/2034 200 38ms
+2026-04-24 08:01:01 INFO  GET /api/users/2035 200 41ms
+2026-04-24 08:01:02 INFO  POST /api/auth/login 200 88ms user=alice@corp.com
+2026-04-24 08:01:03 INFO  POST /api/auth/login 200 92ms user=bob@corp.com
+2026-04-24 08:01:04 INFO  POST /api/auth/login 200 87ms user=charlie@corp.com
+2026-04-24 08:01:05 INFO  POST /api/auth/login 200 94ms user=diana@corp.com
+2026-04-24 08:01:10 WARN  Slow query detected: SELECT * FROM products JOIN inventory ON products.id=inventory.product_id WHERE category='electronics' took 1240ms
+2026-04-24 08:01:11 INFO  GET /api/products/category/electronics 200 1289ms
+2026-04-24 08:02:00 ERROR DB connection pool exhausted. Waiting for available connection. pool_size=20 waiting=5
+2026-04-24 08:02:01 ERROR DB connection pool exhausted. Waiting for available connection. pool_size=20 waiting=8
+2026-04-24 08:02:02 ERROR DB connection pool exhausted. Waiting for available connection. pool_size=20 waiting=12
+2026-04-24 08:02:03 WARN  DB pool wait time exceeded 2000ms for 3 requests
+2026-04-24 08:02:04 INFO  DB connection pool recovered. pool_size=20 waiting=0
+2026-04-24 08:02:05 INFO  Pool expansion triggered: new pool_size=35
+2026-04-24 08:05:00 INFO  POST /api/orders 201 198ms order_id=ORD-98232
+2026-04-24 08:05:00 INFO  POST /api/orders 201 201ms order_id=ORD-98233
+2026-04-24 08:05:01 INFO  POST /api/orders 201 195ms order_id=ORD-98234
+2026-04-24 08:05:01 INFO  POST /api/orders 201 203ms order_id=ORD-98235
+2026-04-24 08:05:02 ERROR Payment gateway timeout for ORD-98235. Retrying (attempt 1/3)
+2026-04-24 08:05:04 ERROR Payment gateway timeout for ORD-98235. Retrying (attempt 2/3)
+2026-04-24 08:05:08 INFO  Payment gateway response: SUCCESS txn_id=TXN-44826 for ORD-98235
+2026-04-24 08:10:00 WARN  Memory usage at 78% on web-03. GC pressure detected.
+2026-04-24 08:10:01 INFO  GC cycle triggered on web-03. Freed 512MB
+2026-04-24 08:10:02 INFO  Memory usage normalized to 52% on web-03
+2026-04-24 08:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 08:20:00 INFO  Rate limit approaching for IP 10.0.1.55: 88/100 requests per minute
+2026-04-24 08:20:01 INFO  Rate limit approaching for IP 10.0.1.55: 95/100 requests per minute
+2026-04-24 08:20:02 ERROR Rate limit exceeded for IP 10.0.1.55. Requests blocked for 60s
+2026-04-24 08:21:02 INFO  Rate limit window reset for IP 10.0.1.55
+2026-04-24 08:25:00 INFO  Scheduled job: sync_inventory_with_warehouse started
+2026-04-24 08:25:45 INFO  Scheduled job: sync_inventory_with_warehouse completed. Updated 3,421 SKUs
+2026-04-24 08:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+2026-04-24 09:00:00 INFO  Business hours traffic peak. Active users: 4,211
+2026-04-24 09:00:05 INFO  POST /api/auth/login 200 89ms user=manager@enterprise.com
+2026-04-24 09:00:10 INFO  GET /api/reports/sales?date=2026-04-23 200 445ms
+2026-04-24 09:00:11 INFO  GET /api/reports/inventory 200 388ms
+2026-04-24 09:01:00 WARN  Slow query: SELECT SUM(total) FROM orders WHERE created_at > '2026-04-01' GROUP BY user_id took 2100ms
+2026-04-24 09:01:01 INFO  Query plan cached for future use
+2026-04-24 09:05:00 ERROR Elasticsearch cluster health degraded: status=YELLOW. 2 unassigned shards
+2026-04-24 09:05:01 WARN  Search latency elevated: avg 890ms (normal: 120ms)
+2026-04-24 09:05:30 INFO  Elasticsearch shard rebalancing started
+2026-04-24 09:07:45 INFO  Elasticsearch cluster health restored: status=GREEN. All shards assigned
+2026-04-24 09:07:46 INFO  Search latency normalized: avg 125ms
+2026-04-24 09:10:00 INFO  POST /api/bulk-import 202 accepted. job_id=JOB-1122 records=15000
+2026-04-24 09:10:01 INFO  Background job JOB-1122 started on worker-03
+2026-04-24 09:12:33 INFO  Background job JOB-1122 completed. Imported 14,998 records. 2 rejected (validation errors)
+2026-04-24 09:12:34 WARN  Bulk import JOB-1122: rejected records logged to /var/log/import-errors/JOB-1122.json
+2026-04-24 09:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 09:20:00 INFO  SSL certificate for api.example.com expires in 14 days. Renewal reminder sent.
+2026-04-24 09:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 09:45:00 INFO  Scheduled job: send_daily_digest_emails started. Recipients: 12,443
+2026-04-24 09:48:22 INFO  Scheduled job: send_daily_digest_emails completed. Sent: 12,441 Failed: 2
+2026-04-24 09:48:23 WARN  Failed email delivery for user_id=8823 (bounced), user_id=9102 (invalid address)
+
+2026-04-24 10:00:00 INFO  Mid-morning traffic steady. Active users: 5,892
+2026-04-24 10:00:01 INFO  GET /api/products/search?q=laptop 200 145ms results=42
+2026-04-24 10:00:02 INFO  GET /api/products/search?q=phone 200 138ms results=87
+2026-04-24 10:00:03 INFO  GET /api/products/search?q=headphones 200 152ms results=63
+2026-04-24 10:01:00 WARN  Suspicious login attempt: user=admin@example.com from IP=45.33.32.156 (known bad actor list)
+2026-04-24 10:01:01 ERROR Authentication failed for user=admin@example.com from IP=45.33.32.156. Account locked after 5 attempts.
+2026-04-24 10:01:02 INFO  Security alert triggered. Notified security team via PagerDuty.
+2026-04-24 10:01:03 INFO  IP 45.33.32.156 added to temporary blocklist for 24 hours
+2026-04-24 10:05:00 INFO  POST /api/orders 201 205ms order_id=ORD-98300
+2026-04-24 10:10:00 INFO  Webhook received from payment gateway: event=payment.refund order_id=ORD-97811 amount=29.99
+2026-04-24 10:10:01 INFO  Refund processed for ORD-97811. User notified.
+2026-04-24 10:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 10:20:00 INFO  CDN cache hit rate: 94.2%. Edge nodes: 12 healthy
+2026-04-24 10:25:00 WARN  Disk usage at 72% on db-primary. Alert threshold: 80%
+2026-04-24 10:25:01 INFO  Disk usage alert notification sent to ops-team@example.com
+2026-04-24 10:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+2026-04-24 12:00:00 INFO  Lunchtime traffic spike. Active users: 7,103
+2026-04-24 12:00:01 INFO  Auto-scaling triggered: adding 1 worker node
+2026-04-24 12:00:20 INFO  Worker node web-07 joined cluster
+2026-04-24 12:01:00 INFO  POST /api/orders 201 192ms order_id=ORD-98401
+2026-04-24 12:01:01 INFO  POST /api/orders 201 188ms order_id=ORD-98402
+2026-04-24 12:01:02 INFO  POST /api/orders 201 195ms order_id=ORD-98403
+2026-04-24 12:01:03 INFO  POST /api/orders 201 201ms order_id=ORD-98404
+2026-04-24 12:01:04 INFO  POST /api/orders 201 197ms order_id=ORD-98405
+2026-04-24 12:01:05 ERROR Payment gateway connection refused for ORD-98405. Using fallback gateway.
+2026-04-24 12:01:06 INFO  Fallback payment gateway SUCCESS for ORD-98405 txn_id=TXN-FALLBACK-00231
+2026-04-24 12:01:07 WARN  Primary payment gateway degraded. Failover mode active.
+2026-04-24 12:05:00 INFO  Primary payment gateway health restored. Failover mode deactivated.
+2026-04-24 12:10:00 INFO  GET /api/products/list 200 115ms
+2026-04-24 12:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 12:20:00 INFO  Scheduled job: generate_sales_report completed. Report saved to /reports/2026-04-24-midday.pdf
+2026-04-24 12:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+2026-04-24 14:00:00 INFO  Afternoon traffic steady. Active users: 6,445
+2026-04-24 14:01:00 INFO  POST /api/auth/login 200 90ms user=devops@example.com
+2026-04-24 14:01:01 INFO  POST /api/deploy 202 accepted. deploy_id=DEPLOY-551 version=v2.14.3
+2026-04-24 14:01:02 INFO  Deployment DEPLOY-551 started. Rolling update strategy.
+2026-04-24 14:01:30 INFO  Deployment DEPLOY-551: web-01 updated successfully
+2026-04-24 14:02:00 INFO  Deployment DEPLOY-551: web-02 updated successfully
+2026-04-24 14:02:30 INFO  Deployment DEPLOY-551: web-03 updated successfully
+2026-04-24 14:03:00 INFO  Deployment DEPLOY-551: web-04 updated successfully
+2026-04-24 14:03:30 INFO  Deployment DEPLOY-551: web-05 updated successfully
+2026-04-24 14:04:00 INFO  Deployment DEPLOY-551: web-06 updated successfully
+2026-04-24 14:04:30 INFO  Deployment DEPLOY-551: web-07 updated successfully
+2026-04-24 14:04:31 INFO  Deployment DEPLOY-551 complete. All nodes running v2.14.3
+2026-04-24 14:05:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 14:10:00 WARN  Elevated 5xx error rate detected: 2.3% (normal <0.5%)
+2026-04-24 14:10:01 ERROR GET /api/recommendations 500 Internal Server Error user=user_5521
+2026-04-24 14:10:01 ERROR GET /api/recommendations 500 Internal Server Error user=user_6832
+2026-04-24 14:10:02 ERROR GET /api/recommendations 500 traceback: AttributeError: 'NoneType' object has no attribute 'score' in recommendation_engine.py:line 241
+2026-04-24 14:10:03 INFO  Error pattern detected. Alerting on-call engineer.
+2026-04-24 14:10:04 INFO  Hotfix deployment initiated: DEPLOY-552 for recommendation engine null check
+2026-04-24 14:12:00 INFO  Deployment DEPLOY-552 complete. v2.14.4 rolled out to all nodes
+2026-04-24 14:12:01 INFO  5xx error rate normalized: 0.1%
+2026-04-24 14:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 14:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+2026-04-24 17:00:00 INFO  End-of-business traffic winding down. Active users: 3,201
+2026-04-24 17:00:01 INFO  Auto-scaling: removing excess nodes
+2026-04-24 17:00:30 INFO  Worker node web-07 gracefully removed from cluster
+2026-04-24 17:01:00 INFO  Worker node web-06 gracefully removed from cluster
+2026-04-24 17:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 18:00:00 INFO  Daily summary: Total requests=1,284,321 Errors=843 (0.07%) Avg response=112ms P99=890ms
+2026-04-24 18:00:01 INFO  Orders processed today: 4,821 Total revenue: $892,341.50
+2026-04-24 18:00:02 INFO  New users registered today: 1,204
+2026-04-24 18:00:03 INFO  Peak concurrent users: 7,103 at 12:00
+2026-04-24 18:00:04 INFO  Deployments today: 2 (v2.14.3, v2.14.4)
+2026-04-24 18:00:05 INFO  Security events: 1 brute-force attempt blocked (IP: 45.33.32.156)
+2026-04-24 18:00:06 INFO  Daily summary report saved to /reports/daily/2026-04-24.json

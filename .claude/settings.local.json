@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(ClaudeShrink)",
+      "Bash(cp /Users/akshaygundewar/Work/ClaudeShrink/scripts/compressor.py ~/.claude/skills/ClaudeShrink/scripts/compressor.py)",
+      "Bash(cp /Users/akshaygundewar/Work/ClaudeShrink/SKILL.md ~/.claude/skills/ClaudeShrink/SKILL.md)"
+    ]
+  }
+}

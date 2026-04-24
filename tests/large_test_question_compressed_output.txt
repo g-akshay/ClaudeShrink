@@ -1,0 +1,105 @@
+Application Server Log - Full Day Export
+
+2026--24:01 INFO ly maintenance window started
+:  Running vacuum on database tables: users,,,,: uum completed. Reclaimed 1.2GB uilding search for products:  index rebuild. 248,902 documents:: ging expired sessions than days. Found,231:  Session. Removed: iving orders year to storage
+-24  Archive.oved,405 to3:////
+ ly.: 150  check.: DB=,,,: :24 Cache=OK, Queue=OK, Search=OK
+2026-04-24 01:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 02:00:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+
+What errors, warnings, and critical incidents occurred?
+20--2400 INFO  Morning traffic rampup detected
+:: /1001 200 42/ 200// 200ms=./ 200://list?&20 200 20002  Cache for::: - from
+20-24  200 245/ 200ms.//smith 200  process1 processing email. 231 emails  check.:=,2026-04-24 06:20:00 INFO  POST /api/orders 201 210ms order_id=ORD-98231 user=john.doe amount=149.99
+2026-04-24 06:20:01 INFO  Payment gateway request for ORD-98231 initiated
+2026-04-24 06:20:02 INFO  Payment gateway response: SUCCESS txn_id=TXN-44821 amount=149.99
+2026-04-24 06:20:03 INFO  Order ORD-98231 confirmed. Inventory updated.
+2026-04-24 06:20:04 INFO  Fulfillment request queued for ORD-98231
+
+2026-04-24 08:00:00 INFO  Peak morning traffic window starting
+
+What errors, warnings, and critical incidents occurred?
+2026--24::01 INFO  Auto-aling: adding 2 nodes
+:  Worker node web-05 joined cluster::  ///2034 200 38 200 //login 200ms user=ice@ 200=b 200=@
+-24  20010  Slow query: FROM productsIN= WHERE='' 12/ 200 12ms ERROR DB connection pool. for.20= exhausted. Waiting for available connection. pool_size=20 waiting=12
+2026-04-24 08:02:03 WARN  DB pool wait time exceeded 2000ms for 3 requests
+2026-04-24 08:02:04 INFO  DB connection pool recovered. pool_size=20 waiting=0
+2026-04-24 08:02:05 INFO  Pool expansion triggered: new pool_size=35
+2026-04-24 08:05:00 INFO  POST /api/orders 201 198ms order_id=ORD-98232
+
+What errors, warnings, and critical incidents occurred?
+2026--24::00 INFO /orders 201 201ms=ORD-98233
+ 201 195 20102 ERROR Payment gateway timeout for OR.rying (empt 1  gateway:ESS tx=-44826 for:00  at on-. GC pressure
+-24  GC cycle. Freed  usage:  check.:=,,  limit for.:10002 ERROR.ests 60s
+2026-04-24 08:21:02 INFO  Rate limit window reset for IP 10.0.1.55
+2026-04-24 08:25:00 INFO  Scheduled job: sync_inventory_with_warehouse started
+2026-04-24 08:25:45 INFO  Scheduled job: sync_inventory_with_warehouse completed. Updated 3,421 SKUs
+2026-04-24 08:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+2026-04-24 09:00:00 INFO  Business hours traffic peak. Active users: 4,211
+
+What errors, warnings, and critical incidents occurred?
+20-24:05 INFO //login 200 89ms=@
+//?=23 200/inventory 200:00  Slow SELECT FROM WHEREat >- BYid took  Query plan for:00 ERRORsearch cluster health:=YOW. 2 unigned  Search latency: 8 (:
+20-24 searchard:=. shards avg /-import 202.=-2  job on-.ported, 2 (34  import JOB-1122: rejected records logged to /var/log/import-errors/JOB-1122.json
+2026-04-24 09:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 09:20:00 INFO  SSL certificate for api.example.com expires in 14 days. Renewal reminder sent.
+2026-04-24 09:30:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+
+What errors, warnings, and critical incidents occurred?
+2000 INFO uled:___ails.:,
+::ails.,441:23  Failed for= (b9 (valid morning traffic.,
+ /=aptop 200 145ms=
+==
+- /=phones 200ms00 iciouscom. (known bad actor ERROR. Account . via  IP156 to for:ordersms=ORD-98300
+2026-04-24 10:10:00 INFO  Webhook received from payment gateway: event=payment.refund order_id=ORD-97811 amount=29.99
+2026-04-24 10:10:01 INFO  Refund processed for ORD-97811. User notified.
+2026-04-24 10:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 10:20:00 INFO  CDN cache hit rate: 94.2%. Edge nodes: 12 healthy
+
+What errors, warnings, and critical incidents occurred?
+20-24::00 WARN  Disk usage at% on db-. Alert:
+01 usage alert notification to-@:  check.: DB=,,,
+24 time traffic. Active:,
+ -aling: 1 worker:  node-07 joined
+  //orders 201 192ms=ORD-98  / 201ms=98
+20-2405 ERROR Payment gateway for. Using  gateway405=-F-00  gateway degraded. Failover mode active.
+2026-04-24 12:05:00 INFO  Primary payment gateway health restored. Failover mode deactivated.
+2026-04-24 12:10:00 INFO  GET /api/products/list 200 115ms
+2026-04-24 12:15:00 INFO  Health check passed. Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 12:20:00 INFO  Scheduled job: generate_sales_report completed. Report saved to /reports/2026-04-24-midday.pdf
+
+What errors, warnings, and critical incidents occurred?
+2026--24::00 INFO  Health check.: DB=,,,OK
+24  Afternoon traffic. Active:,445
+:  POST ///login 200 90ms user=devops
+:/ploy 202. deploy_=DEOY-551=..
+ ment551. Rolling update strategy
+:551:-01 updated
+ment DE:-02 updated
+-24:551. All running.  check Services: DB=OK, Cache=OK, Queue=OK, Search=OK
+2026-04-24 14:10:00 WARN  Elevated 5xx error rate detected: 2.3% (normal <0.5%)
+2026-04-24 14:10:01 ERROR GET /api/recommendations 500 Internal Server Error user=user_5521
+2026-04-24 14:10:01 ERROR GET /api/recommendations 500 Internal Server Error user=user_6832
+
+What errors, warnings, and critical incidents occurred?
+20-24:02 ERROR/ations 500:None' ' in_:line
+ INFO  Error pattern.ing on-call fix deployment: DEOY-552 for engine null:ment552..4 all  5xx error rate:  check.: DB=,,,24  check.=,,
+20-24 business traffic.,
+ :
+:  node-07
+
+: 
+  Daily Total requests,,32107%) Avg response=112ms P99=890ms
+2026-04-24 18:00:01 INFO  Orders processed today: 4,821 Total revenue: $892,341.50
+2026-04-24 18:00:02 INFO  New users registered today: 1,204
+2026-04-24 18:00:03 INFO  Peak concurrent users: 7,103 at 12:00
+2026-04-24 18:00:04 INFO  Deployments today: 2 (v2.14.3, v2.14.4)
+
+What errors, warnings, and critical incidents occurred?
+2026-04-24 18:00:05 INFO  Security events: 1 brute-force attempt blocked (IP: 45.33.32.156)
+2026-04-24 18:00:06 INFO  Daily summary report saved to /reports/daily/2026-04-24.json
+
+
+What errors, warnings, and critical incidents occurred?
