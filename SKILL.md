@@ -35,7 +35,7 @@ It runs inside an isolated venv at: `~/.claude/skills/ClaudeShrink/.venv`
 
 ## When to Use
 
-- User pastes a large block of text, code, logs, or a document (>200 lines)
+- User pastes a large block of text, logs, or a document (>~8000 chars / ~2000 tokens)
 - User asks to analyze, summarize, or reason over a large file on disk
 - User's prompt is very long and would benefit from compression before reasoning
 - User explicitly says "use ClaudeShrink" or "compress this"
@@ -68,24 +68,27 @@ Follow these steps in order every time this skill is triggered:
    ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /absolute/path/to/file.txt
    ```
 
-4. **If it's raw pasted text or a prompt (no file on disk)**, write to a temp file first, then compress, then delete:
+4. **If it's raw pasted text or a prompt (no file on disk)**, write to a uniquely-named temp file, compress, then delete:
    Write the actual input content into the heredoc (do not write a placeholder string):
    ```bash
-   cat > /tmp/cs_input.txt << 'EOF'
+   TMP=$(mktemp /tmp/cs_input.XXXXXX.txt)
+   cat > "$TMP" << 'EOF'
    [insert the full raw text content here]
    EOF
-   ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /tmp/cs_input.txt
-   rm /tmp/cs_input.txt
+   ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py "$TMP"
+   rm "$TMP"
    ```
 
 5. **Capture stdout** — this is the compressed text. Ignore stderr (it contains stats for your reference).
 
-6. **Use only the compressed text** as your working context for the user's request.
+6. **If the compressor exits non-zero**, warn the user ("ClaudeShrink compression failed — proceeding with raw input") and continue with the original uncompressed text.
 
-7. **Inform the user** with a one-line note, e.g.:
+7. **Use only the compressed text** (or raw text on failure) as your working context for the user's request.
+
+8. **Inform the user** with a one-line note, e.g.:
    > "Input compressed with ClaudeShrink (LLMLingua). Compression stats: [paste ratio from stderr if available]."
 
-8. **Proceed with the user's original request** using the compressed context.
+9. **Proceed with the user's original request** using the compressed context.
 
 ---
 
@@ -110,7 +113,7 @@ Then analyze the compressed output.
 **Example 2 — Pasted text:**
 > User pastes 800 lines of documentation inline.
 
-Write it to `/tmp/cs_input.txt`, compress, delete, analyze.
+Write it to a `mktemp`-generated path, compress, delete, analyze.
 
 **Example 3 — Explicit trigger:**
 > User: "Use ClaudeShrink on this prompt before answering: [long prompt]"

@@ -2,27 +2,32 @@ import sys
 import os
 from llmlingua import PromptCompressor
 
-# Heuristic: aim to compress to ~30% of original token count, floored at 512, capped at 4096.
 # 1 token ≈ 4 chars (rough estimate for English text).
 def estimate_target_tokens(text: str) -> int:
     approx_tokens = len(text) // 4
     target = max(512, min(4096, int(approx_tokens * 0.3)))
-    return target
+    return target, approx_tokens
 
 def compress_text(content: str):
+    target, approx_tokens = estimate_target_tokens(content)
+
+    # Input is already small — no benefit from compressing
+    if approx_tokens <= 512:
+        print(content)
+        print(f"<!-- ClaudeShrink: input ~{approx_tokens} tokens, skipped compression -->", file=sys.stderr)
+        return
+
     # Using gpt2 fixes the unpack error and runs much faster on CPU
     compressor = PromptCompressor(
         model_name="gpt2",
         device_map="cpu"
     )
 
-    target = estimate_target_tokens(content)
-
-    # Split text into manageable chunks to fix the sequence length error
+    # Split text into manageable chunks to stay under GPT2's 1024-token limit
     lines = content.split('\n')
     chunks = []
     current_chunk = ""
-    
+
     for line in lines:
         # 1500 characters is safely under the GPT2 token limit (1024)
         if len(current_chunk) + len(line) > 1500:
@@ -31,15 +36,12 @@ def compress_text(content: str):
             current_chunk = line
         else:
             current_chunk += ("\n" + line if current_chunk else line)
-            
+
     if current_chunk:
         chunks.append(current_chunk)
 
-    # Process each chunk individually
     compressed_chunks = []
-    
-    # Simple strategy: divide the target tokens evenly among the chunks
-    per_chunk_target = max(64, target // len(chunks)) if chunks else target
+    per_chunk_target = max(128, target // len(chunks)) if chunks else target
     
     for c in chunks:
         res = compressor.compress_prompt(

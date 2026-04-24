@@ -1,4 +1,4 @@
-llmlingua
-torch
-transformers
-accelerate
+llmlingua==0.2.2
+torch>=2.0,<3.0
+transformers>=5.0,<6.0
+accelerate>=1.0,<2.0
