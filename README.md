@@ -41,6 +41,17 @@ To update to the latest version, simply run the exact same command again. It is 
 curl -fsSL https://raw.githubusercontent.com/g-akshay/ClaudeShrink/main/install.sh | bash
 ```
 
+### System & Hardware Requirements
+
+Because ClaudeShrink uses GPT-2 instead of massive local LLMs, it is incredibly lightweight and runs smoothly in the background while you code.
+
+| Component | Requirement | Explanation |
+|---|---|---|
+| **Memory (RAM)** | 2GB+ (4GB recommended) | The local GPT-2 model is tiny. Standard developer machines will not notice it running. |
+| **Storage (Disk)** | ~4GB | `torch` and dependencies take ~3.5GB; the model weights are ~500MB. |
+| **Compute** | Basic CPU | No GPU required. Runs lightning-fast on Intel, AMD, and Apple Silicon CPUs. |
+| **Software** | Python 3.9+, Git | Standard environment prerequisites. |
+
 ## How to Trigger
 
 Claude will automatically use this skill when it detects a request to process a large file. You can also explicitly trigger it by asking:
