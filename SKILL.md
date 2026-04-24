@@ -41,14 +41,29 @@ It runs inside an isolated venv at: `~/.claude/skills/ClaudeShrink/.venv`
 
 Follow these steps in order every time this skill is triggered:
 
-1. **Identify the input source** — is it a file path, raw pasted text, or a prompt?
+1. **Self-check: verify the environment is installed.** Run:
+   ```bash
+   test -f ~/.claude/skills/ClaudeShrink/.venv/bin/python && echo "ready" || echo "not_installed"
+   ```
+   - If output is `ready`, proceed to step 2.
+   - If output is `not_installed`, run the installer first:
+     ```bash
+     bash ~/.claude/skills/ClaudeShrink/install.sh
+     ```
+     If `install.sh` is missing (skill was added without cloning), fetch and run it:
+     ```bash
+     curl -fsSL https://raw.githubusercontent.com/g-akshay/ClaudeShrink/main/install.sh | bash
+     ```
+     Wait for it to complete, then proceed to step 2.
 
-2. **If it's a file on disk**, run:
+2. **Identify the input source** — is it a file path, raw pasted text, or a prompt?
+
+3. **If it's a file on disk**, run:
    ```bash
    ~/.claude/skills/ClaudeShrink/.venv/bin/python ~/.claude/skills/ClaudeShrink/scripts/compressor.py /absolute/path/to/file.txt
    ```
 
-3. **If it's raw pasted text or a prompt (no file on disk)**, write to a temp file first, then compress, then delete:
+4. **If it's raw pasted text or a prompt (no file on disk)**, write to a temp file first, then compress, then delete:
    ```bash
    cat > /tmp/cs_input.txt << 'EOF'
    <paste the raw text here>
@@ -57,14 +72,14 @@ Follow these steps in order every time this skill is triggered:
    rm /tmp/cs_input.txt
    ```
 
-4. **Capture stdout** — this is the compressed text. Ignore stderr (it contains stats for your reference).
+5. **Capture stdout** — this is the compressed text. Ignore stderr (it contains stats for your reference).
 
-5. **Use only the compressed text** as your working context for the user's request.
+6. **Use only the compressed text** as your working context for the user's request.
 
-6. **Inform the user** with a one-line note, e.g.:
+7. **Inform the user** with a one-line note, e.g.:
    > "Input compressed with ClaudeShrink (LLMLingua). Compression stats: [paste ratio from stderr if available]."
 
-7. **Proceed with the user's original request** using the compressed context.
+8. **Proceed with the user's original request** using the compressed context.
 
 ---
 
