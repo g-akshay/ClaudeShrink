@@ -1,0 +1,29 @@
+{
+  "name": "ClaudeShrink",
+  "slug": "claudeshrink",
+  "type": "skill",
+  "version": "1.0.0",
+  "description": "Automatically compress large natural text or log files before processing using LLMLingua to save tokens. Trigger when the user pastes massive text blobs, asks to analyze a large file (logs, docs, transcripts), or provides a prompt too large for the context window.",
+  "author": "Akshay Gundewar",
+  "repository": "https://github.com/g-akshay/ClaudeShrink",
+  "homepage": "https://github.com/g-akshay/ClaudeShrink",
+  "icon": "🗜️",
+  "tags": [
+    "compression",
+    "tokens",
+    "context-window",
+    "llmlingua",
+    "skills",
+    "ai-tool",
+    "claude-code",
+    "prompt-compression"
+  ],
+  "skillFile": "SKILL.md",
+  "install": "curl -fsSL https://raw.githubusercontent.com/g-akshay/ClaudeShrink/main/install.sh | bash",
+  "requires": {
+    "python3": ">=3.9",
+    "git": "*"
+  },
+  "allowedTools": ["Bash"],
+  "platforms": ["macos", "linux"]
+}
